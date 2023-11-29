@@ -11,6 +11,5 @@ app.use(cors())
 app.get("/",(req,res)=>{
     console.log("hello")
 });
-app.listen(process.env.Port,()=>{
-    console.log(`app listening at http://localhost:${process.env.Port}`);
-});
+
+export default app;
