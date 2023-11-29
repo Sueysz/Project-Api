@@ -2,9 +2,11 @@
   "name": "project-api",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "app.js",
   "type": "module",
   "scripts": {
+    "start": "nodemon index.js",
+    "dev": "node app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -26,6 +28,7 @@
     "zod-express-middleware": "^1.4.0"
   },
   "devDependencies": {
+    "nodemon": "^3.0.1",
     "supertest": "^6.3.3",
     "vitest": "^0.34.6",
     "vitest-mongodb": "^0.0.5"
