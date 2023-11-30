@@ -7,4 +7,4 @@ const TrainSchema = new mongoose.Schema({
     time_of_departure: {type: Date, required: true}
 });
 
-export const UserModel = mongoose.model("Train",TrainSchema);
+export const TrainModel = mongoose.model("Train",TrainSchema);
