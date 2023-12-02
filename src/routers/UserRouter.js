@@ -15,7 +15,10 @@ router.get("/",async (req, res) => {
     res.json(users);
 });
 
-router.put("/:id", (req, res) => {
+router.put("/:id", async (req, res) => {
+    const { id } = req.params;
+    const user = await UserRepository.updateUser(id, req.body);
+    res.json(req.body);
 });
 
 router.delete("/delete/:id", async (req, res) => {

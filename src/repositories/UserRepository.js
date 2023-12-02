@@ -23,6 +23,16 @@ class UserRepository {
   
       return user;
     }
+
+    async updateUser(id, payload) {
+      const upUser = await UserModel.findOneAndUpdate(
+        {
+          _id: id,
+        },
+        payload
+      );
+      return upUser;
+    }
 }
 
 export default new UserRepository();
