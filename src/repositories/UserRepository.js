@@ -13,7 +13,26 @@ class UserRepository {
         );
         return users;
       }
-    
+
+    async deleteUser(id) {
+      await UserModel.deleteOne({_id: id})
+    }
+
+    async createUser(payload) {
+      const user = await UserModel.create(payload);
+  
+      return user;
+    }
+
+    async updateUser(id, payload) {
+      const upUser = await UserModel.findOneAndUpdate(
+        {
+          _id: id,
+        },
+        payload
+      );
+      return upUser;
+    }
 }
 
 export default new UserRepository();
