@@ -3,7 +3,6 @@ import passport from "passport"
 import cors from "cors"
 import dotenv from "dotenv"
 import UserRouter from "./routers/UserRouter.js"
-import { UserModel } from "./models/UserModel.js";
 
 const app = express();
 dotenv.config();
