@@ -21,7 +21,6 @@ import { TrainModel } from "./models/TrainModel.js";
 import { TrainStationModel } from "./models/TrainStationModel.js";
 import { UserModel } from "./models/UserModel.js";
 
-
 const app = express();
 dotenv.config();
 app.use(express.json());
