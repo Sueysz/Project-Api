@@ -1,11 +1,37 @@
 import express from "express";
 import UserRepository from "../repositories/UserRepository.js";
+import { processRequestBody } from "zod-express-middleware";
+import passport from "../passport.js";
+import { z } from "zod";
+import { UserModel } from "../models/UserModel.js";
+
 
 const router = express.Router();
 
-router.post("/create", async (req, res) => {
-    const user = await UserRepository.createUser(req.body);
-    res.status(201).json(user);
+const UserCreateSchema = z.object({
+    email: z.string(),
+    username: z.string(),
+    password: z.string().min(8),
+  });
+
+router.post("/create", processRequestBody(UserCreateSchema), async (req, res) => {
+  try {
+    const newUser = new UserModel({
+        email: req.body.email,
+        username: req.body.username,
+        password: req.body.password,
+        role: "User",
+    });
+
+    await UserModel.register(newUser, req.body.password);
+
+    passport.authenticate("local")(req, res, () => {
+      res.status(201).send("Created");
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(400).json(err);
+  }
 });
 
 // route 
