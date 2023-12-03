@@ -3,9 +3,9 @@ import passport from "passport"
 import cors from "cors"
 import dotenv from "dotenv"
 // Import Router
-import BookingRouter from "./repositories/BookingRouter.js";
-import TrainRouter from "../src/routers/TrainRouter.js"
-import TrainStationRouter from "../src/routers/TrainStationRouter.js"
+import BookingRouter from "./routers/BookingRouter.js";
+import TrainRouter from "./routers/TrainRouter.js"
+import TrainStationRouter from "./routers/TrainStationRouter.js"
 import UserRouter from "./routers/UserRouter.js"
 
 // Import des models
@@ -23,9 +23,9 @@ app.get("/",(req,res)=>{
     console.log("hello")
 });
 
-app.use("/booking", UserRouter);
+app.use("/booking", BookingRouter);
 app.use("/trains", TrainRouter);
-app.use("/train-station", UserRouter);
+app.use("/trains-stations", TrainStationRouter);
 app.use("/users", UserRouter);
 
 export default app;

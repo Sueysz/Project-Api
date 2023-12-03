@@ -1,10 +1,12 @@
 import mongoose from "mongoose"
 
 const BookingSchema = new mongoose.Schema({
-    name: {type: String, required: true},
-    open_at: {type: String, required: true},
-    close_at: {type: String, required: true},
-    img: {type: Blob, required: true}
+    // departure_trainStation_id: relation (train station)
+    // arrival_trainStation_id: relation (train station))
+    // train_id: relation (train)
+    // departure_hour: datetime
+    // arrival_hour: datetime
+    //user_id: relation (user)
 });
 
 export const BookingModel = mongoose.model("Booking",BookingSchema);
