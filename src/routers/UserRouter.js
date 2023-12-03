@@ -14,7 +14,7 @@ const UserCreateSchema = z.object({
     password: z.string().min(8),
   });
 
-router.post("/create", processRequestBody(UserCreateSchema), async (req, res) => {
+router.post("/", processRequestBody(UserCreateSchema), async (req, res) => {
   try {
     const newUser = new UserModel({
         email: req.body.email,
@@ -32,12 +32,6 @@ router.post("/create", processRequestBody(UserCreateSchema), async (req, res) =>
     console.error(err);
     res.status(400).json(err);
   }
-});
-
-// route 
-router.get("/",async (req, res) => {
-    const users = await UserRepository.listUser();
-    res.json(users);
 });
 
 router.get("/:id",async(req,res)=>{

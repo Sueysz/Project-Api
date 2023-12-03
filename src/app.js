@@ -1,5 +1,4 @@
 import express from "express";
-// import passport from "passport"
 import cors from "cors"
 import dotenv from "dotenv"
 import passport from "./passport.js";
@@ -23,9 +22,10 @@ dotenv.config();
 app.use(express.json());
 app.use(
     session({
-      secret: "keyboard cat",
-      resave: false,
-      saveUninitialized: true,
+      secret: process.env.SESSION_SECRET,
+      resave: process.env.SESSION_RESAVE === 'true',
+      saveUninitialized: process.env.SESSION_SAVE_UNINITIALIZED === 'true',
+  
     })
   );
 app.use(cors())
