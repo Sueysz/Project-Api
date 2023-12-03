@@ -5,7 +5,6 @@ const router = express.Router();
 
 router.post("/create", async (req, res) => {
     const user = await UserRepository.createUser(req.body);
-
     res.status(201).json(user);
 });
 
@@ -15,10 +14,16 @@ router.get("/",async (req, res) => {
     res.json(users);
 });
 
+router.get("/:id",async(req,res)=>{
+    const id = req.params.id
+    const users = await UserRepository.listUser();
+    res.json(users);
+})
+
 router.put("/:id", async (req, res) => {
     const { id } = req.params;
     const user = await UserRepository.updateUser(id, req.body);
-    res.json(req.body);
+    res.json(user);
 });
 
 router.delete("/delete/:id", async (req, res) => {
