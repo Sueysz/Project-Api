@@ -6,12 +6,9 @@ import dotenv from "dotenv"
 import BookingRouter from "./routers/BookingRouter.js";
 import TrainRouter from "./routers/TrainRouter.js"
 import TrainStationRouter from "./routers/TrainStationRouter.js"
+
 import UserRouter from "./routers/UserRouter.js"
-// Import des models
-import { BookingModel } from "./models/BookingModel.js";
-import { TrainModel } from "./models/TrainModel.js";
-import { TrainStationModel } from "./models/TrainStationModel.js";
-import { UserModel } from "./models/UserModel.js";
+
 // Import des models
 import { BookingModel } from "./models/BookingModel.js";
 import { TrainModel } from "./models/TrainModel.js";
