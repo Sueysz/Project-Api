@@ -26,6 +26,7 @@ app.get("/",(req,res)=>{
 app.use("/booking", UserRouter);
 app.use("/trains", TrainRouter);
 app.use("/train-station", UserRouter);
+
 app.use("/users", UserRouter);
 
 export default app;
