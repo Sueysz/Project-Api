@@ -6,7 +6,6 @@ import dotenv from "dotenv"
 import BookingRouter from "./routers/BookingRouter.js";
 import TrainRouter from "./routers/TrainRouter.js"
 import TrainStationRouter from "./routers/TrainStationRouter.js"
-
 import UserRouter from "./routers/UserRouter.js"
 
 // Import des models
@@ -19,10 +18,6 @@ const app = express();
 dotenv.config();
 app.use(express.json());
 app.use(cors())
-
-app.get("/",(req,res)=>{
-    console.log("hello")
-});
 
 app.use("/booking", BookingRouter);
 app.use("/trains", TrainRouter);
