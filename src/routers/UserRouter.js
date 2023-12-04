@@ -14,6 +14,11 @@ const UserCreateSchema = z.object({
     password: z.string().min(8),
   });
 
+router.get("/", async (req, res)=>{
+    const user = await UserRepository.listUser();
+    res.status(201).json(user);
+})
+
 router.post("/", processRequestBody(UserCreateSchema), async (req, res) => {
   try {
     const newUser = new UserModel({
