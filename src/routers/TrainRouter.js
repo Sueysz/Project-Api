@@ -1,10 +1,12 @@
 import express from "express";
 import TrainRepository from "../repositories/TrainRepository.js";
 import { errorHandling } from "../errorHandling.js";
+import { processRequestBody } from "zod-express-middleware";
+import { trainCreationPayload } from "./zodTrainSchema.js";
 
 const router = express.Router();
 
-router.post("/", async (req, res) => {
+router.post("/",processRequestBody(trainCreationPayload), async (req, res) => {
     try {
         const train = await TrainRepository.createTrain(req.body);
         res.status(201).json(train);
