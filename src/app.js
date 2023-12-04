@@ -2,8 +2,7 @@ import express from "express";
 import cors from "cors"
 import dotenv from "dotenv"
 import passport from "./passport.js";
-import session from "express-session";
-
+import { sessionMiddleWare } from "./session.js";
 
 // Import Router
 import BookingRouter from "./routers/BookingRouter.js";
@@ -14,14 +13,7 @@ import UserRouter from "./routers/UserRouter.js"
 const app = express();
 dotenv.config();
 app.use(express.json());
-app.use(
-    session({
-      secret: process.env.SESSION_SECRET,
-      resave: process.env.SESSION_RESAVE === 'true',
-      saveUninitialized: process.env.SESSION_SAVE_UNINITIALIZED === 'true',
-  
-    })
-  );
+app.use(sessionMiddleWare);
 app.use(cors())
 app.use(passport.initialize());
 app.use(passport.session());
