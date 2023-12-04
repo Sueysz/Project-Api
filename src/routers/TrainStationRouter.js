@@ -6,8 +6,8 @@ const router = express.Router();
 
 router.post("/", async (req, res) => {
     try {
-        const train = await TrainsStationRepository.createTrainStation(req.body);
-        res.status(201).json(train);
+        const station = await TrainsStationRepository.createTrainStation(req.body);
+        res.status(201).json(station);
     } catch (error) {
         errorHandling(res, error, "An error occurred while creating the train-station");
     }
@@ -26,7 +26,7 @@ router.put("/:id", async (req, res) => {
     try {
         const { id } = req.params;
         const station = await TrainsStationRepository.updateTrainStation(id, req.body);
-        res.json(req.body);
+        res.json(station);
     } catch (error) {
         errorHandling(res, error, "An error occurred while updating the train-station")
     }
