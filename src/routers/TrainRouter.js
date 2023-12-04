@@ -1,25 +1,26 @@
 import express from "express";
-import TrainRepository from "../repositories/TrainRepository";
+import TrainRepository from "../repositories/TrainRepository.js";
 
 const router = express.Router();
 
-router.post("/train/create", async (req, res) => {
+router.post("/", async (req, res) => {
     const train = await TrainRepository.createTrain(req.body);
     res.status(201).json(train);
 });
 
-router.get("/train", async (req, res) => {
+router.get("/", async (req, res) => {
     const trains = await TrainRepository.listTrain();
+    console.log("Trains:", trains);
     res.json(trains);
 });
 
-router.put("/train/:id", async (req, res) => {
+router.put("/:id", async (req, res) => {
     const { id } = req.params;
     const train = await TrainRepository.updateTrain(id, req.body);
     res.json(train);
 });
 
-router.delete("/train/delete/:id", async (req, res) => {
+router.delete("/delete/:id", async (req, res) => {
     await TrainRepository.deleteTrain(req.params.id)
 });
 
