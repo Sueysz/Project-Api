@@ -20,7 +20,7 @@ router.put("/:id", async (req, res) => {
     res.json(train);
 });
 
-router.delete("/delete/:id", async (req, res) => {
+router.delete("/:id", async (req, res) => {
     await TrainRepository.deleteTrain(req.params.id)
 });
 
