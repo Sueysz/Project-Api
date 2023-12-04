@@ -15,9 +15,9 @@ class TrainsRepository {
     }
 
     async createTrain(payload) {
-        const user = await TrainModel.create(payload);
+        const train = await TrainModel.create(payload);
 
-        return user;
+        return train;
     }
 
     async deleteTrain(id) {

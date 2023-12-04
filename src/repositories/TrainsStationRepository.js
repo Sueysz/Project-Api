@@ -25,7 +25,7 @@ class TrainStationRepository {
     }
 
     async updateTrainStation(id, payload) {
-      const ipStations = await TrainStationModel.findOneAndUpdate(
+      const upStations = await TrainStationModel.findOneAndUpdate(
         {
           _id: id,
         },

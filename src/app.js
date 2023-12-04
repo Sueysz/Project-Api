@@ -32,10 +32,6 @@ app.use(cors())
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.get("/",(req,res)=>{
-    console.log("hello")
-});
-
 app.use("/booking", BookingRouter);
 app.use("/trains", TrainRouter);
 app.use("/trains-stations", TrainStationRouter);
