@@ -34,6 +34,16 @@ class TrainStationRepository {
     );
     return upStations;
   }
+
+  async getTrainStation(id, payload) {
+    const getTrain = await TrainStationModel.findOne(
+      {
+        _id: id,
+      },
+      payload
+    );
+    return getTrain;
+  }
 }
 
 export default new TrainStationRepository();
