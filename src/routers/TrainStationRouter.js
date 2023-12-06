@@ -56,12 +56,10 @@ router.delete("/:id", async (req, res) => {
 
 router.get("/:id/images", async (req, res) => {
     try {
-        let imageTrain = "";
-
-        await TrainsStationRepository.getTrainStation(req.params.id).then((train) => {
-            // @ts-ignore Img existe bien mais mon eslint me met une erreur ts car il pense que je type mal mais en js on ne type pas.
-            imageTrain = train.img
-        });
+        const train = await TrainsStationRepository.getTrainStation(req.params.id)
+        // @ts-ignore
+        let imageTrain = train?.img;
+        
         res.status(200).send(imageTrain);
     } catch (error) {
         errorHandling(res, error, "an error occured while retrieving image from db", 500);
