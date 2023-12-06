@@ -11,7 +11,7 @@ const router = express.Router();
 const UserCreateSchema = z.object({
     email: z.string(),
     username: z.string(),
-    password: z.string().min(8),
+    password: z.string().min(4),
   });
 
 router.get("/", async (req, res)=>{
@@ -21,18 +21,24 @@ router.get("/", async (req, res)=>{
 
 router.post("/", processRequestBody(UserCreateSchema), async (req, res) => {
   try {
-    const newUser = new UserModel({
-        email: req.body.email,
+    UserModel.register(
+      new UserModel({
         username: req.body.username,
-        password: req.body.password,
+        email: req.body.email,
         role: "User",
-    });
-
-    await UserModel.register(newUser, req.body.password);
-
-    passport.authenticate("local")(req, res, () => {
-      res.status(201).send("Created");
-    });
+      }),
+      req.body.password,
+      (err, account) => {
+        if (err) {
+          console.error(err);
+          return res.status(400).json(err);
+        }
+  
+        passport.authenticate("local")(req, res, () => {
+          res.status(201).send("Created");
+        });
+      }
+    );
   } catch (err) {
     console.error(err);
     res.status(400).json(err);
