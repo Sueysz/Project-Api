@@ -16,7 +16,13 @@ const UserCreateSchema = z.object({
     password: z.string().min(4),
     role: z.string(),
   });
-  
+
+const jwt = require('jsonwebtoken');
+const dotenv = require('dotenv');
+
+dotenv.config();
+process.env.TOKEN_SECRET;
+
   // route creation user
 router.post("/", processRequestBody(UserCreateSchema), async (req, res) => {
   try {
