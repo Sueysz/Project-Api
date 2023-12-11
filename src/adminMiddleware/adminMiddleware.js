@@ -6,9 +6,10 @@
 //     next();
 //   }
 
-  const jwt = require("jsonwebtoken");
 
   export function adminMiddleware(req, res, next) {
+    const jwt = require("jsonwebtoken");
+
     const authorization = req.headers["authorization"];
     if (!authorization) {
       return res.status(403).json("Forbidden");
