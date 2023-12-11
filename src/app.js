@@ -3,6 +3,7 @@ import cors from "cors"
 import dotenv from "dotenv"
 import passport from "./passport.js";
 import { sessionMiddleWare } from "./session.js";
+import jtwMiddleWare from "./adminMiddleware/jwtMiddleWare.js"
 
 // Import Router
 import BookingRouter from "./routers/BookingRouter.js";
@@ -21,6 +22,6 @@ app.use(passport.session());
 app.use("/booking", BookingRouter);
 app.use("/trains", TrainRouter);
 app.use("/trains-stations", TrainStationRouter);
-app.use("/users", UserRouter);
+app.use("/users", jtwMiddleWare, UserRouter);
 
 export default app;
