@@ -18,7 +18,8 @@ router.post("/",processRequestBody(trainPayload), async (req, res) => {
 
 router.get("/", async (req, res) => {
     try {
-        const trains = await TrainRepository.listTrain();
+        const limit = Number(req.query.limit) || 10;
+        const trains = await TrainRepository.listTrain(limit);
         res.status(200).json(trains);
     } catch (error) {
         errorHandling(res, error, "An error occurred while fetching the list of trains",503);
