@@ -1,29 +1,24 @@
-// export function adminMiddleware(req, res, next) {
-//     const authorization = req.headers["authorization"];
-//       if (!authorization || authorization !== "Admin") {
-//         return res.status(403).json("Forbidden");
-//     }
-//     next();
-//   }
+import jwt from "jsonwebtoken";
+import { createTokenAdmin } from "../createTokenAdmin.js"; 
 
+export function adminMiddleware(req, res, next) {
+  const authorization = req.headers["authorization"];
+  if (!authorization) {
+    return res.status(403).json("Forbidden");
+  }
 
-  export function adminMiddleware(req, res, next) {
-    const jwt = require("jsonwebtoken");
+  const token = authorization.replace("Bearer ", "");
+  const secretKey = process.env.TOKEN_SECRET; 
 
-    const authorization = req.headers["authorization"];
-    if (!authorization) {
+  jwt.verify(token, secretKey, (err, user) => {
+    if (err || user.role !== "Admin") {
       return res.status(403).json("Forbidden");
     }
-  
-    const token = authorization.replace("Bearer ", "");
-  
-    jwt.verify(token, "votre_secret_key", (err, user) => {
-      if (err || user.role !== "admin") {
-        return res.status(403).json("Forbidden");
-      }
-      req.user = user;
-  
-      next();
-    });
-  }
-  
+
+    req.user = user;
+    next();
+  });
+}
+
+const generatedToken = createTokenAdmin();
+console.log('Generated Token for Admin:', generatedToken);

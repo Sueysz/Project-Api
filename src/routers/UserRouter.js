@@ -16,7 +16,7 @@ const UserCreateSchema = z.object({
     password: z.string().min(4),
     role: z.string(),
   });
-
+  
   // route creation user
 router.post("/", processRequestBody(UserCreateSchema), async (req, res) => {
   try {
@@ -44,7 +44,7 @@ router.post("/", processRequestBody(UserCreateSchema), async (req, res) => {
 }
 });
 
-  // Only admin / employee can get all users
+  // Only admin / employee can get all users (bothCheckMiddleware)
 router.get("/", bothCheckMiddleware, async (req, res) => {
   try {
     const user = await UserRepository.listUser();
