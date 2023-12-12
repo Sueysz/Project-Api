@@ -44,7 +44,7 @@ router.post("/", processRequestBody(UserCreateSchema), async (req, res) => {
 }
 });
 
-  // Only admin / employee can get all users
+  // Only admin / employee can get all users (bothCheckMiddleware)
 router.get("/", bothCheckMiddleware, async (req, res) => {
   try {
     const user = await UserRepository.listUser();
