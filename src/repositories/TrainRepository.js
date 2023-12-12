@@ -1,7 +1,7 @@
 import { TrainModel } from "../models/TrainModel.js";
 
 class TrainsRepository {
-    async listTrain() {
+    async listTrain(limit = 10) {
         const trains = await TrainModel.find(
             {},
             {
@@ -10,7 +10,7 @@ class TrainsRepository {
                 end_station: true,
                 time_of_departure: true,
             }
-        );
+        ).limit(limit);
         return trains;
     }
 
@@ -29,7 +29,8 @@ class TrainsRepository {
             {
                 _id: id,
             },
-            payload
+            payload,
+            { new: true }
         );
         return upTrain;
     }
