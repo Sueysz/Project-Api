@@ -12,25 +12,20 @@ describe("GET /users", () => {
         await mongoose.connect(globalThis.__MONGO_URI__);
     });
 
-    it("[200] returns an empty list if there is no users", async () => {
+    it("[403] returns an forbiden if do not have token", async () => {
         const response = await request.get("/users").send();
 
-        expect(response.status).toEqual(200);
-        expect(response.body).toEqual([]);
+        expect(response.status).toEqual(403);
+        expect(response.body).toEqual("Forbidden");
     });
 
-    it("[200] returns a list if there are users", async () => {
-        const users = await UserModel.create({
-            email: "test@test.test",
-            username: "test",
-            role: ["user"],
-          });
-          const response = await request.get("/user").send();
+    it("[404] returns error if there are no users", async () => {
+        
+        const response = await request.get("/user").send();
 
-          expect(response.status).toEqual(200);
-          expect(response.body).toHaveLength(1);
-          expect(response.body[0]).toMatchObject({
-            username:"test",
-          });
+        expect(response.status).toEqual(404);
+
     });
 });
+
+
