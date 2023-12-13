@@ -6,16 +6,10 @@ import { z } from "zod";
 import { UserModel } from "../models/UserModel.js";
 import { adminMiddleware } from "../adminMiddleware/adminMiddleware.js";
 import { bothCheckMiddleware } from "../adminMiddleware/bothCheckMiddleware.js";
+import { UserCreateSchema } from "../schema/zodSchema.js";
 
 
 const router = express.Router();
-
-const UserCreateSchema = z.object({
-    email: z.string(),
-    username: z.string(),
-    password: z.string().min(4),
-    role: z.string(),
-  });
 
   // route creation user
 router.post("/", processRequestBody(UserCreateSchema), async (req, res) => {

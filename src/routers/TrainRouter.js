@@ -2,7 +2,7 @@ import express from "express";
 import TrainRepository from "../repositories/TrainRepository.js";
 import { errorHandling } from "../errorHandling.js";
 import { processRequestBody } from "zod-express-middleware";
-import { trainPayload } from "../schema/zodTrainSchema.js";
+import { trainPayload } from "../schema/zodSchema.js";
 
 const router = express.Router();
 

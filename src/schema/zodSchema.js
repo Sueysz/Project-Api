@@ -14,3 +14,11 @@ export const trainStationPayload = z.object({
     img: z.string(),
 });
 
+export const UserCreateSchema = z.object({
+    email: z.string(),
+    username: z.string(),
+    password: z.string().min(4),
+    role: z.string(),
+  });
+
+
