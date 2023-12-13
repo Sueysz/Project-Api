@@ -3,6 +3,7 @@ import TrainRepository from "../repositories/TrainRepository.js";
 import { errorHandling } from "../errorHandling.js";
 import { processRequestBody } from "zod-express-middleware";
 import { trainPayload } from "../schema/zodSchema.js";
+import { TrainModel } from "../models/TrainModel.js";
 
 const router = express.Router();
 
@@ -18,8 +19,12 @@ router.post("/",processRequestBody(trainPayload), async (req, res) => {
 
 router.get("/", async (req, res) => {
     try {
-        const limit = Number(req.query.limit) || 10;
-        const trains = await TrainRepository.listTrain(limit);
+        const { limit = 10, sortBy, sortOrder } = req.query;
+        const sortOptions = sortBy ? { [sortBy.toString()]: sortOrder === "desc" ? -1 : 1 } : {};
+        const trains = await TrainModel.find({}, { name: true, start_station: true, end_station: true, time_of_departure: true })
+            .limit(Number(limit))
+            .sort(sortOptions)
+            .exec();
         res.status(200).json(trains);
     } catch (error) {
         errorHandling(res, error, "An error occurred while fetching the list of trains",503);
