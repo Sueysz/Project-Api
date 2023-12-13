@@ -4,6 +4,7 @@ import supertest from "supertest";
 
 import app from "../app.js";
 import { UserModel } from "../models/UserModel";
+import { createTokenAdmin } from "../createTokenAdmin.js";
 
 describe("GET /users", () => {
     const request = supertest(app);
@@ -20,8 +21,10 @@ describe("GET /users", () => {
     });
 
     it("[404] returns error if there are no users", async () => {
-        
-        const response = await request.get("/user").send();
+
+        const adminToken = createTokenAdmin();
+        console.log(adminToken);
+        const response = await request.get("/users").set("authorization", `${adminToken}`).send();
 
         expect(response.status).toEqual(404);
 
