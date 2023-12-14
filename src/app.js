@@ -1,7 +1,6 @@
 import express from "express";
 import cors from "cors"
 import dotenv from "dotenv"
-import passport from "./passport.js";
 import { sessionMiddleWare } from "./session.js";
 
 // Import Router
@@ -15,8 +14,7 @@ dotenv.config();
 app.use(express.json());
 app.use(sessionMiddleWare);
 app.use(cors())
-app.use(passport.initialize());
-app.use(passport.session());
+
 
 app.use("/booking", BookingRouter);
 app.use("/trains", TrainRouter);
