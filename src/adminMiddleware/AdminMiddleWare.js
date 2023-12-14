@@ -2,7 +2,7 @@ import jwt from "jsonwebtoken";
 
 const config = process.env;
 
-export const adminMiddleWare = (req, res, next) => {
+export const AdminMiddleWare = (req, res, next) => {
     const token =
         req.body.token || req.query.token || req.headers["x-access-token"];
 

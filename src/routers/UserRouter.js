@@ -3,9 +3,10 @@ import UserRepository from "../repositories/UserRepository.js";
 import { processRequestBody } from "zod-express-middleware";
 import { z } from "zod";
 import { UserModel } from "../models/UserModel.js";
-import bcrypt from "bcryptjs"
+import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import { adminMiddleWare } from "../adminMiddleware/AdminMiddleWare.js"
+import { AdminMiddleWare } from "../adminMiddleware/AdminMiddleWare.js";
+import { DoubleMiddleWare } from "../adminMiddleware/DoubleMiddleWare.js";
 
 
 const router = express.Router();
@@ -98,8 +99,8 @@ router.post("/login", async (req, res) => {
   }
 });
 
-  // Only admin / employee can get all users (bothCheckMiddleware)
-router.get("/", adminMiddleWare , async (req, res) => {
+  // Only admin / employee can get all users
+router.get("/", AdminMiddleWare , async (req, res) => {
   try {
     const user = await UserRepository.listUser();
     res.status(200).json(user);
@@ -109,12 +110,12 @@ router.get("/", adminMiddleWare , async (req, res) => {
   }
 });
 
-  // Utile ??
-// router.get("/:id", bothCheckMiddleware ,async(req,res)=>{
-//     const id = req.params.id
-//     const users = await UserRepository.listUser();
-//     res.json(users);
-// });
+  // Only admin / employee can get all users
+router.get("/:id", DoubleMiddleWare ,async(req,res)=>{
+    const id = req.params.id
+    const users = await UserRepository.getOneUser(id);
+    res.json(users);
+});
 
   // Only admin / your self can update user
   router.put("/:id", async (req, res) => {

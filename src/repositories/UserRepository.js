@@ -13,7 +13,9 @@ class UserRepository {
         );
         return users;
       }
-
+    async getOneUser(id) {
+      return await UserModel.findById(id);
+    }
     async deleteUser(id) {
       await UserModel.deleteOne({_id: id})
     }
