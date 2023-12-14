@@ -21,7 +21,7 @@ router.get("/", async (req, res) => {
     try {
         const { limit = 10, sortBy, sortOrder } = req.query;
         const sortOptions = sortBy ? { [sortBy.toString()]: sortOrder === "desc" ? -1 : 1 } : {};
-        const trains = await TrainModel.find({}, { name: true, start_station: true, end_station: true, time_of_departure: true })
+        const trains = await TrainModel.find({}, {})
             .limit(Number(limit))
             .sort(sortOptions)
             .exec();
