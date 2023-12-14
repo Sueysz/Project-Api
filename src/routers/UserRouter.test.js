@@ -14,7 +14,9 @@ describe("GET /users", () => {
     });
 
     it("[403] returns an forbiden if do not have token", async () => {
-        const response = await request.get("/users").send();
+        const response = await request
+            .get("/users")
+            .send();
 
         expect(response.status).toEqual(403);
         expect(response.body).toEqual("Forbidden");
@@ -39,7 +41,9 @@ describe("GET /users", () => {
                 role: "User",
             };
 
-            const response = await request.post("/users").send(newUser);
+            const response = await request
+                .post("/users")
+                .send(newUser);
 
             expect(response.status).toEqual(201);
         });
@@ -61,7 +65,10 @@ describe("GET /users", () => {
             };
 
             const adminToken = createTokenAdmin();
-            const response = await request.put(`/users/${userToUpdate._id}`).set("authorization", `Bearer ${adminToken}`).send(updatedUserData);
+            const response = await request
+                .put(`/users/${userToUpdate._id}`)
+                .set("authorization", `Bearer ${adminToken}`)
+                .send(updatedUserData);
 
             expect(response.status).toEqual(200);
         });
@@ -77,10 +84,21 @@ describe("GET /users", () => {
                 role: "User",
             });
 
-            const adminToken = createTokenAdmin();
-            const response = await request.delete(`/users/delete/${userToDelete._id}`).set("authorization", `Bearer ${adminToken}`).send();
+            console.log(userToDelete);
 
+            const adminToken = createTokenAdmin();
+            
+            const response = await request
+                .delete(`/users/delete/${userToDelete._id}`)
+                .set("authorization", `Bearer ${adminToken}`)
+                .send()
+                console.log(response);
             expect(response.status).toEqual(204);
+            
+            const deletedUser = await UserModel
+                .findById(userToDelete._id);
+
+            expect(deletedUser).toBeNull()
         });
 
     });
