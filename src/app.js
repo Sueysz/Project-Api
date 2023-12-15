@@ -21,7 +21,7 @@ app.use("/booking", BookingRouter);
 app.use("/trains", TrainRouter);
 app.use("/trains-stations", TrainStationRouter);
 app.use("/users", UserRouter);
-app.use((err,req,res,next)=>{
-    errorHandling(err,res)
-})
+app.use((error,req,res,next)=>{
+    errorHandling(res,{error})
+});
 export default app;
