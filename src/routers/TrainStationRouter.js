@@ -5,42 +5,26 @@ import { errorHandling } from "../errorHandling.js";
 const router = express.Router();
 
 router.post("/", async (req, res) => {
-    try {
-        await TrainsStationRepository.createTrainStation(req.body);
-        res.status(201)
-            .send()
-    } catch (error) {
-        errorHandling(res, error, "An error occurred while creating the train-station", 400);
-    }
+    await TrainsStationRepository.createTrainStation(req.body);
+    res.status(201)
+        .send()
 });
 
 router.get("/", async (req, res) => {
-    try {
-        const station = await TrainsStationRepository.listTrainStation();
-        res.json(station);
-    } catch (error) {
-        errorHandling(res, error, "An error occured while fetching the list of train-station", 503);
-    }
+    const station = await TrainsStationRepository.listTrainStation();
+    res.json(station);
 });
 
 router.get("/:id", async (req, res) => {
-    try {
-        const { id } = req.params;
-        const station = await TrainsStationRepository.getTrainStation(id);
-        res.json(station);
-    } catch (error) {
-        errorHandling(res, error, "An error occured while fetching the list of train-station", 503);
-    }
+    const { id } = req.params;
+    const station = await TrainsStationRepository.getTrainStation(id);
+    res.json(station);
 });
 
 router.put("/:id", async (req, res) => {
-    try {
-        const { id } = req.params;
-        await TrainsStationRepository.updateTrainStation(id, req.body);
-        res.send();
-    } catch (error) {
-        errorHandling(res, error, "An error occurred while updating the train-station", 400);
-    }
+    const { id } = req.params;
+    await TrainsStationRepository.updateTrainStation(id, req.body);
+    res.send();
 
 });
 
@@ -53,28 +37,24 @@ router.delete("/:id", async (req, res) => {
         if (error.message === "station not found") {
             return errorHandling(res, error, "an error occured while deleting the train-station", 404);
         }
-        errorHandling(res, error, "an error occured while deleting the train-station");
+        throw error
     }
 });
 
 
 
 router.get("/:id/image", async (req, res) => {
-    try {
-        const train = await TrainsStationRepository.getTrainStation(req.params.id)
-        if (train === null) {
-            return res.status(404)
-                .send();
-        }
-        // @ts-ignore
-        let imageTrain = train?.img;
-
-        res.status(200)
-            .set('Content-Type', 'image/png')
-            .send(imageTrain);
-    } catch (error) {
-        errorHandling(res, error, "an error occured while retrieving image from db", 500);
+    const train = await TrainsStationRepository.getTrainStation(req.params.id)
+    if (train === null) {
+        return res.status(404)
+            .send();
     }
+    // @ts-ignore
+    let imageTrain = train?.img;
+
+    res.status(200)
+        .set('Content-Type', 'image/png')
+        .send(imageTrain);
 })
 
 export default router;
