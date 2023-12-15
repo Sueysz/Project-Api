@@ -6,8 +6,9 @@ const router = express.Router();
 
 router.post("/", async (req, res) => {
     try {
-        const station = await TrainsStationRepository.createTrainStation(req.body);
-        res.status(201).json(station);
+        await TrainsStationRepository.createTrainStation(req.body);
+        res.status(201)
+            .send()
     } catch (error) {
         errorHandling(res, error, "An error occurred while creating the train-station", 400);
     }
