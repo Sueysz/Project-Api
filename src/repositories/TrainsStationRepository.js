@@ -15,7 +15,10 @@ class TrainStationRepository {
   }
 
   async deleteTrainStation(id) {
-    await TrainStationModel.deleteOne({ _id: id })
+    const { deletedCount } = await TrainStationModel.deleteOne({ _id: id })
+    if (deletedCount !== 1) {
+      throw new Error("station not found");
+    }
   }
 
   async createTrainStation(payload) {

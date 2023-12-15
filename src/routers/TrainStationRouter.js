@@ -50,7 +50,10 @@ router.delete("/:id", async (req, res) => {
         res.status(204)
             .end()
     } catch (error) {
-        errorHandling(res, error, "an error occured while deleting the train-station", 400);
+        if (error.message === "station not found") {
+            return errorHandling(res, error, "an error occured while deleting the train-station", 404);
+        }
+        errorHandling(res, error, "an error occured while deleting the train-station");
     }
 });
 
