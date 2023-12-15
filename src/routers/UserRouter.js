@@ -1,132 +1,83 @@
 import express from "express";
 import UserRepository from "../repositories/UserRepository.js";
 import { processRequestBody } from "zod-express-middleware";
-import { z } from "zod";
 import { UserModel } from "../models/UserModel.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import { AdminMiddleWare } from "../adminMiddleware/AdminMiddleWare.js";
-import { DoubleMiddleWare } from "../adminMiddleware/DoubleMiddleWare.js";
+import { UserCreateSchema } from "../schema/zodSchema.js";
+import { errorHandling } from "../errorHandling.js";
+import { verifyAuthorization } from "../adminMiddleware/authorizationMiddleware.js";
+import { AuthentificationMiddleWare } from "../adminMiddleware/authentificationMiddleware.js";
 
 
 const router = express.Router();
 
-  // route creation user
-// router.post("/", processRequestBody(UserCreateSchema), async (req, res) => {
-//   try {
-//     UserModel.register(
-//     new UserModel({
-//       username: req.body.username,
-//       email: req.body.email,
-//       role: req.body.role,
-//     }),
-//     req.body.password,
-//     (err, account) => {
-//       if (err) {
-//         console.error(err);
-//         return res.status(400).json(err);
-//       }
-
-//         res.status(201).send("Created");
-//     }
-//   );
-// } catch (err) {
-//   console.error(err);
-//   res.status(400).json(err);
-// }
-// });
-
-const registerSchema = z.object({
-  email: z.string().email(),
-  username: z.string(),
-  password: z.string(),
-  role: z.string().optional(), // Vous pouvez ajuster cela en fonction de votre logique métier
-});
-
-router.post("/register", async (req, res) => {
-  try {
-    const { email, username, password, role } = req.body;
-    if (!(email && username && password)) {
-      res.status(400).send("All input is required");
-    }
-    const oldUser = await UserModel.findOne({ email });
-    if (oldUser) {
-      return res.status(409).send("UserModel Already Exist. Please Login");
-    }
-    const encryptedPassword = await bcrypt.hash(password, 10);
-    const user = await UserModel.create({
-      email: email.toLowerCase(),
-      username,
-      password: encryptedPassword,
-      role: "User",
-    });
-    const token = jwt.sign(
-      { user_id: user._id, email, role },
-      process.env.TOKEN_SECRET,
-      {
-        expiresIn: "2h",
-      }
-    );
-    user.token = token;
-    res.status(201).json(user);
-  } catch (err) {
-    console.log(err);
+router.post("/register", processRequestBody(UserCreateSchema), async (req, res) => {
+  const { email, username, password } = req.body;
+  if (!email || !username || !password) {
+    return errorHandling(res, { errorCode: 400 })
   }
+  const oldUser = await UserModel.findOne({ email });
+  if (oldUser) {
+    return errorHandling(res, { errorCode: 409 });
+  }
+  const encryptedPassword = await bcrypt.hash(password, 10);
+  const user = await UserModel.create({
+    email: email.toLowerCase(),
+    username,
+    password: encryptedPassword,
+    role: "User",
+  });
+  res.status(201).json(user);
 });
 
 router.post("/login", async (req, res) => {
-  try {
-    const { email, password } = req.body;
-    if (!(email && password)) {
-      return res.status(400).send("All input is required");
-    }
-    const user = await UserModel.findOne({ email });
-    if (user && (await bcrypt.compare(password, user.password))) {
-      const token = jwt.sign(
-        { user_id: user._id, email ,role: user.role},
-        process.env.TOKEN_SECRET,
-        {
-          expiresIn: "2h",
-        }
-      );
-      user.token = token;
-      return res.status(200).json(user);
-    }
-    return res.status(400).send("Invalid Credentials");
-  } catch (err) {
-    console.log(err);
-    return res.status(500).send("Internal Server Error");
+  const { email, password } = req.body;
+  if (!email || !password) {
+    return errorHandling(res, { errorMessage: "bad request", errorCode: 400 })
   }
+  const user = await UserModel.findOne({ email });
+  if (!user) {
+    return errorHandling(res, { errorMessage: "bad credentials", errorCode: 401 })
+  }
+  const isCorrectPassword = await bcrypt.compare(password, user.password)
+  if (!isCorrectPassword) {
+    return errorHandling(res, { errorMessage: "bad credentials", errorCode: 401 })
+  }
+  const token = jwt.sign(
+    { sub: user._id },
+    process.env.TOKEN_SECRET,
+    {
+      expiresIn: "2h",
+    }
+  );
+  return res.status(200).json({ token });
+
 });
 
-  // Only admin / employee can get all users
-router.get("/", AdminMiddleWare , async (req, res) => {
-  try {
+// Only admin / employee can get all users
+router.get("/",AuthentificationMiddleWare ,verifyAuthorization("Admin"), async (req, res) => {
     const user = await UserRepository.listUser();
     res.status(200).json(user);
-  } catch (error) {
-    console.error("Marche po '-'", error);
-    res.status(500).json({ error: "Internal server error" });
-  }
 });
 
-  // Only admin / employee can get all users
-router.get("/:id", DoubleMiddleWare ,async(req,res)=>{
-    const id = req.params.id
-    const users = await UserRepository.getOneUser(id);
-    res.json(users);
+// Only admin / employee can get all users
+router.get("/:id", AuthentificationMiddleWare, verifyAuthorization("Admin"||"Employee"), async (req, res) => {
+  const id = req.params.id
+  const users = await UserRepository.getById(id);
+  res.json(users);
 });
 
-  // Only admin / your self can update user
-  router.put("/:id", async (req, res) => {
-    const { id } = req.params;
-    const user = await UserRepository.updateUser(id, req.body);
-    res.json(user);
+// Only admin / your self can update user
+router.put("/:id", async (req, res) => {
+  const { id } = req.params;
+  await UserRepository.updateUser(id, req.body);
+  res.send()
 });
 
-  // Only your self can delete your self
-  router.delete("/delete/:id", async (req, res) => {
-    await UserRepository.deleteUser(req.params.id)
+// Only your self can delete your self
+router.delete("/delete/:id", async (req, res) => {
+  await UserRepository.deleteUser(req.params.id)
 });
 
 export default router;

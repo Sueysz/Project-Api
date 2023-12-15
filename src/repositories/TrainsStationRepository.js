@@ -5,21 +5,26 @@ class TrainStationRepository {
     const stations = await TrainStationModel.find(
       {},
       {
-        name: true,
-        open_at: true,
-        close_at: true,
-        img: true,
+        img: false,
       }
     );
     return stations;
   }
 
   async deleteTrainStation(id) {
-    await TrainStationModel.deleteOne({ _id: id })
+    const { deletedCount } = await TrainStationModel.deleteOne({ _id: id })
+    if (deletedCount !== 1) {
+      throw new Error("station not found");
+    }
   }
 
   async createTrainStation(payload) {
-    const stations = await TrainStationModel.create(payload);
+
+    const stations = await TrainStationModel.create({
+      ...payload,
+      img: Buffer.from(payload.img, "base64"),
+
+    });
 
     return stations;
   }
@@ -35,12 +40,14 @@ class TrainStationRepository {
     return upStations;
   }
 
-  async getTrainStation(id, payload) {
+  async getTrainStation(id) {
     const getTrain = await TrainStationModel.findOne(
       {
         _id: id,
       },
-      payload
+      {
+        img: false,
+      }
     );
     return getTrain;
   }

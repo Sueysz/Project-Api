@@ -13,11 +13,14 @@ class UserRepository {
         );
         return users;
       }
-    async getOneUser(id) {
+    async getById(id) {
       return await UserModel.findById(id);
     }
     async deleteUser(id) {
-      await UserModel.deleteOne({_id: id})
+      const { deletedCount } = await UserModel.deleteOne({_id: id})
+      if (deletedCount !== 1) {
+        throw new Error("user not found");
+      }
     }
 
     async createUser(payload) {
