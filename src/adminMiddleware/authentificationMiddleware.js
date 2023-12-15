@@ -1,9 +1,9 @@
 import jwt from "jsonwebtoken";
-import UserRepository from "../repositories/UserRepository";
-import { errorHandling } from "../errorHandling";
+import UserRepository from "../repositories/UserRepository.js";
+import { errorHandling } from "../errorHandling.js";
 
 export const AuthentificationMiddleWare = (req, res, next) => {
-    const token = req.headers["Authorization"];
+    const token = req.headers["authorization"];
 
     if (!token) {
         return res.status(403).send("A token is required for authentication");

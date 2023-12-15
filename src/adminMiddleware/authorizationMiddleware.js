@@ -1,4 +1,4 @@
-import { errorHandling } from "../errorHandling"
+import { errorHandling } from "../errorHandling.js"
 
 export const verifyAuthorization = (expectedRole)=>{
     return (req, res, next)=>{
