@@ -19,7 +19,11 @@ class TrainStationRepository {
   }
 
   async createTrainStation(payload) {
-    const stations = await TrainStationModel.create(payload);
+    const stations = await TrainStationModel.create({
+      ...payload,
+      img: Buffer.from(payload.img, "base64"),
+
+    });
 
     return stations;
   }

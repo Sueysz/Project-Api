@@ -46,7 +46,8 @@ router.put("/:id", async (req, res) => {
 router.delete("/:id", async (req, res) => {
     try {
         await TrainsStationRepository.deleteTrainStation(req.params.id)
-        res.status(204).end()
+        res.status(204)
+            .end()
     } catch (error) {
         errorHandling(res, error, "an error occured while deleting the train-station", 400);
     }
@@ -54,13 +55,19 @@ router.delete("/:id", async (req, res) => {
 
 
 
-router.get("/:id/images", async (req, res) => {
+router.get("/:id/image", async (req, res) => {
     try {
         const train = await TrainsStationRepository.getTrainStation(req.params.id)
+        if (train === null) {
+            return res.status(404)
+                .send();
+        }
         // @ts-ignore
         let imageTrain = train?.img;
-        
-        res.status(200).send(imageTrain);
+
+        res.status(200)
+            .set('Content-Type', 'image/png')
+            .send(imageTrain);
     } catch (error) {
         errorHandling(res, error, "an error occured while retrieving image from db", 500);
     }
