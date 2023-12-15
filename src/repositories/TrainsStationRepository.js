@@ -5,10 +5,7 @@ class TrainStationRepository {
     const stations = await TrainStationModel.find(
       {},
       {
-        name: true,
-        open_at: true,
-        close_at: true,
-        img: true,
+        img: false,
       }
     );
     return stations;
@@ -22,6 +19,7 @@ class TrainStationRepository {
   }
 
   async createTrainStation(payload) {
+
     const stations = await TrainStationModel.create({
       ...payload,
       img: Buffer.from(payload.img, "base64"),
@@ -42,12 +40,14 @@ class TrainStationRepository {
     return upStations;
   }
 
-  async getTrainStation(id, payload) {
+  async getTrainStation(id) {
     const getTrain = await TrainStationModel.findOne(
       {
         _id: id,
       },
-      payload
+      {
+        img: false,
+      }
     );
     return getTrain;
   }

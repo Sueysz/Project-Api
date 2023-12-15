@@ -26,7 +26,7 @@ router.get("/", async (req, res) => {
 router.get("/:id", async (req, res) => {
     try {
         const { id } = req.params;
-        const station = await TrainsStationRepository.getTrainStation();
+        const station = await TrainsStationRepository.getTrainStation(id);
         res.json(station);
     } catch (error) {
         errorHandling(res, error, "An error occured while fetching the list of train-station", 503);
