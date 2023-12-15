@@ -20,7 +20,19 @@ router.post("/",processRequestBody(trainPayload), async (req, res) => {
 router.get("/", async (req, res) => {
     try {
         const { limit = 10, sortBy, sortOrder } = req.query;
-        const sortOptions = sortBy ? { [sortBy.toString()]: sortOrder === "desc" ? -1 : 1 } : {};
+
+    /** @typedef {import('mongoose').SortOrder} SortOrder */
+    /** @type {{ [key: string]: SortOrder }} */
+    let sortOptions = { name: 'asc' }
+
+    if (sortBy) {
+        if (sortOrder === "desc") {
+            sortOptions = { [sortBy.toString()]: 'desc' }
+        } else {
+            sortOptions = { [sortBy.toString()]: 'asc' }
+        }
+    }
+
         const trains = await TrainModel.find({}, {})
             .limit(Number(limit))
             .sort(sortOptions)
