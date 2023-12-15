@@ -4,11 +4,11 @@ import { processRequestBody } from "zod-express-middleware";
 import { UserModel } from "../models/UserModel.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import "dotenv/config";
 import { UserCreateSchema } from "../schema/zodSchema.js";
 import { errorHandling } from "../errorHandling.js";
 import { verifyAuthorization } from "../adminMiddleware/authorizationMiddleware.js";
 import { AuthentificationMiddleWare } from "../adminMiddleware/authentificationMiddleware.js";
-
 
 const router = express.Router();
 

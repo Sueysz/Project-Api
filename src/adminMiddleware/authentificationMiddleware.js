@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import UserRepository from "../repositories/UserRepository.js";
 import { errorHandling } from "../errorHandling.js";
+import "dotenv/config" 
 
 export const AuthentificationMiddleWare = (req, res, next) => {
     const token = req.headers["authorization"];
@@ -10,7 +11,8 @@ export const AuthentificationMiddleWare = (req, res, next) => {
     }
 
     // @ts-ignore
-    jwt.verify(token, process.env.TOKEN_SECRET, async (err, payload) => {
+    jwt.verify(token.slice(7), process.env.TOKEN_SECRET, async (err, payload) => {
+        console.log(process.env.TOKEN_SECRET)
         if(err) {
             return errorHandling(res, { errorMessage: "Invalid token", errorCode: 401 })
         }
