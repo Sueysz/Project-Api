@@ -36,8 +36,8 @@ router.get("/:id", async (req, res) => {
 router.put("/:id", async (req, res) => {
     try {
         const { id } = req.params;
-        const station = await TrainsStationRepository.updateTrainStation(id, req.body);
-        res.json(station);
+        await TrainsStationRepository.updateTrainStation(id, req.body);
+        res.send();
     } catch (error) {
         errorHandling(res, error, "An error occurred while updating the train-station", 400);
     }
