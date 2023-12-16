@@ -1,11 +1,11 @@
 import { errorHandling } from "../errorHandling.js"
 
-export const verifyAuthorization = (expectedRole)=>{
+export const verifyAuthorization = (expectedRoles)=>{
     return (req, res, next)=>{
         if(!req.user){
             return errorHandling(res)
         }
-        if(req.user.role !== expectedRole){
+        if(!expectedRoles.includes(req.user.role)){
             return errorHandling(res,{errorCode:403})
         }
         next();

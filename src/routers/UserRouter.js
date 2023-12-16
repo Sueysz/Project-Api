@@ -40,12 +40,14 @@ router.post("/login", async (req, res) => {
   if (!user) {
     return errorHandling(res, { errorMessage: "bad credentials", errorCode: 401 })
   }
+  // @ts-ignore
   const isCorrectPassword = await bcrypt.compare(password, user.password)
   if (!isCorrectPassword) {
     return errorHandling(res, { errorMessage: "bad credentials", errorCode: 401 })
   }
   const token = jwt.sign(
     { sub: user._id },
+    // @ts-ignore
     process.env.TOKEN_SECRET,
     {
       expiresIn: "2h",
@@ -56,28 +58,54 @@ router.post("/login", async (req, res) => {
 });
 
 // Only admin / employee can get all users
-router.get("/",AuthentificationMiddleWare ,verifyAuthorization("Admin"), async (req, res) => {
-    const user = await UserRepository.listUser();
-    res.status(200).json(user);
+// @ts-ignore
+router.get("/", authentificationMiddleWare, verifyAuthorization(["Admin", "Employee"]), async (req, res) => {
+  const user = await UserRepository.listUser();
+  res.status(200).json(user);
 });
 
 // Only admin / employee can get all users
-router.get("/:id", AuthentificationMiddleWare, verifyAuthorization("Admin"||"Employee"), async (req, res) => {
+router.get("/:id", authentificationMiddleWare, verifyAuthorization(["Admin", "Employee"]), async (req, res) => {
   const id = req.params.id
   const users = await UserRepository.getById(id);
   res.json(users);
 });
 
 // Only admin / your self can update user
-router.put("/:id", async (req, res) => {
+router.put("/:id", authentificationMiddleWare, verifyAuthorization(["Admin", "Employee", "User"]), async (req, res) => {
   const { id } = req.params;
-  await UserRepository.updateUser(id, req.body);
-  res.send()
-});
+  const { role } = req.body;
+
+  // @ts-ignore
+  if (req.user.role !== "Admin" && req.user._id !== id) {
+      return errorHandling(res, { errorMessage: "Access Denied", errorCode: 403 });
+    }
+
+    // Role change check
+    // @ts-ignore
+    if (role !== undefined && req.user.role !== "Admin") {
+      return errorHandling(res, { errorMessage: "Only Admin can change user roles", errorCode: 403 });
+    }
+
+    // Update user
+    await UserRepository.updateUser(id, req.body);
+
+    // Success response
+    return res.send("User updated successfully");
+  });
 
 // Only your self can delete your self
-router.delete("/delete/:id", async (req, res) => {
-  await UserRepository.deleteUser(req.params.id)
+// @ts-ignore
+router.delete("/delete/:id",authentificationMiddleware, async (req, res) => {
+  const { id } = req.params;
+  
+    // @ts-ignore
+    if (req.user._id.toString() !== id) {
+      return errorHandling(res, { errorMessage: "Access Denied", errorCode: 403 });
+    }
+    await UserRepository.deleteUser(id);
+
+    res.status(200).send("User deleted successfully");
 });
 
 export default router;
