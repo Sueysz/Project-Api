@@ -13,7 +13,7 @@ import { autoCatch } from "../utils/handler.js";
 
 const router = express.Router();
 
-router.post("/register", processRequestBody(UserCreateSchema), autoCatch (async (req, res) => {
+router.post("/register", processRequestBody(UserCreateSchema), autoCatch(async (req, res) => {
   const { email, username, password } = req.body;
   if (!email || !username || !password) {
     return errorHandling(res, { errorCode: 400 })
@@ -29,10 +29,10 @@ router.post("/register", processRequestBody(UserCreateSchema), autoCatch (async 
     password: encryptedPassword,
     role: "User",
   });
-  res.status(201).json(user);
+  res.status(201).json({ id: user._id });
 }));
 
-router.post("/login", autoCatch (async (req, res) => {
+router.post("/login", autoCatch(async (req, res) => {
   const { email, password } = req.body;
   if (!email || !password) {
     return errorHandling(res, { errorMessage: "bad request", errorCode: 400 })
@@ -60,7 +60,7 @@ router.post("/login", autoCatch (async (req, res) => {
 
 // Only admin / employee can get all users
 // @ts-ignore
-router.get("/", authentificationMiddleWare, verifyAuthorization(["Admin", "Employee"]),autoCatch (async (req, res) => {
+router.get("/", authentificationMiddleWare, verifyAuthorization(["Admin", "Employee"]), autoCatch(async (req, res) => {
   const user = await UserRepository.listUser();
   res.status(200).json(user);
 }));
@@ -103,7 +103,7 @@ router.put("/:id", authentificationMiddleWare, verifyAuthorization(["Admin", "Em
 
 // Only your self can delete your self
 // @ts-ignore
-router.delete("/delete/:id", authentificationMiddleWare, autoCatch( async(req, res) => {
+router.delete("/delete/:id", authentificationMiddleWare, autoCatch(async (req, res) => {
   const { id } = req.params;
 
   // @ts-ignore

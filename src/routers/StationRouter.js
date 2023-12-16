@@ -1,4 +1,4 @@
-import express from "express";
+import express, { json } from "express";
 import TrainsStationRepository from "../repositories/StationRepository.js";
 import { errorHandling } from "../utils/errorHandling.js";
 import { authentificationMiddleWare } from "../adminMiddleware/authentificationMiddleware.js";
@@ -9,9 +9,8 @@ const router = express.Router();
 
 router.post("/", authentificationMiddleWare, verifyAuthorization("Admin"), autoCatch(async (req, res) => {
     try {
-        await TrainsStationRepository.createStation(req.body);
-        res.status(201)
-            .send()
+        const station = await TrainsStationRepository.createStation(req.body);
+        res.status(201).json({id : station._id})
     } catch (error) {
         if (error.message === ("Station already created")) {
             errorHandling(res, { error, errorCode: 409 })
