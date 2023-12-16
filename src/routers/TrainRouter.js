@@ -15,18 +15,7 @@ router.post("/",authentificationMiddleWare,verifyAuthorization("Admin"), process
 
 router.get("/", async (req, res) => {
     const { limit = 10, sortBy, sortOrder } = req.query;
-
-    /** @typedef {import('mongoose').SortOrder} SortOrder */
-    /** @type {{ [key: string]: SortOrder }} */
-    let sortOptions = { name: 'asc' }
-
-    if (sortBy) {
-        if (sortOrder === "desc") {
-            sortOptions = { [sortBy.toString()]: 'desc' }
-        } else {
-            sortOptions = { [sortBy.toString()]: 'asc' }
-        }
-    }
+    const sortOptions = getSortOptions(sortBy, sortOrder)
 
     const trains = await TrainModel.find({}, {})
         .limit(Number(limit))
