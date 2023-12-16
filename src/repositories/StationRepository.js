@@ -1,8 +1,8 @@
-import { TrainStationModel } from "../models/TrainStationModel.js";
+import { stationModel } from "../models/StationModel.js";
 
 class TrainStationRepository {
   async listTrainStation() {
-    const stations = await TrainStationModel.find(
+    const stations = await stationModel.find(
       {},
       {
         img: false,
@@ -12,7 +12,7 @@ class TrainStationRepository {
   }
 
   async deleteTrainStation(id) {
-    const { deletedCount } = await TrainStationModel.deleteOne({ _id: id })
+    const { deletedCount } = await stationModel.deleteOne({ _id: id })
     if (deletedCount !== 1) {
       throw new Error("station not found");
     }
@@ -20,7 +20,7 @@ class TrainStationRepository {
 
   async createTrainStation(payload) {
 
-    const stations = await TrainStationModel.create({
+    const stations = await stationModel.create({
       ...payload,
       img: Buffer.from(payload.img, "base64"),
 
@@ -30,7 +30,7 @@ class TrainStationRepository {
   }
 
   async updateTrainStation(id, payload) {
-    const upStations = await TrainStationModel.findOneAndUpdate(
+    const upStations = await stationModel.findOneAndUpdate(
       {
         _id: id,
       },
@@ -41,7 +41,7 @@ class TrainStationRepository {
   }
 
   async getTrainStation(id) {
-    const getTrain = await TrainStationModel.findOne(
+    const getTrain = await stationModel.findOne(
       {
         _id: id,
       },

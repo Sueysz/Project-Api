@@ -7,4 +7,4 @@ const TrainStationSchema = new mongoose.Schema({
     img: {type: Buffer, required: true}
 });
 
-export const TrainStationModel = mongoose.model("station",TrainStationSchema);
+export const stationModel = mongoose.model("station",TrainStationSchema);

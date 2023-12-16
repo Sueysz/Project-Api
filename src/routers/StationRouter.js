@@ -1,5 +1,5 @@
 import express from "express";
-import TrainsStationRepository from "../repositories/TrainsStationRepository.js";
+import TrainsStationRepository from "../repositories/StationRepository.js";
 import { errorHandling } from "../utils/errorHandling.js";
 import { authentificationMiddleWare } from "../adminMiddleware/authentificationMiddleware.js";
 import { verifyAuthorization } from "../adminMiddleware/authorizationMiddleware.js";
@@ -24,14 +24,14 @@ router.get("/:id", async (req, res) => {
     res.json(station);
 });
 
-router.put("/:id", async (req, res) => {
+router.put("/:id",authentificationMiddleWare, verifyAuthorization("Admin"), async (req, res) => {
     const { id } = req.params;
     await TrainsStationRepository.updateTrainStation(id, req.body);
     res.send();
 
 });
 
-router.delete("/:id", async (req, res) => {
+router.delete("/:id",authentificationMiddleWare, verifyAuthorization("Admin"), async (req, res) => {
     try {
         await TrainsStationRepository.deleteTrainStation(req.params.id)
         res.status(204)
