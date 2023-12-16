@@ -6,7 +6,7 @@ import { sessionMiddleWare } from "./session.js";
 // Import Router
 import BookingRouter from "./routers/BookingRouter.js";
 import TrainRouter from "./routers/TrainRouter.js"
-import TrainStationRouter from "./routers/TrainStationRouter.js"
+import TrainStationRouter from "./routers/StationRouter.js"
 import UserRouter from "./routers/UserRouter.js"
 import { errorHandling } from "./utils/errorHandling.js";
 
