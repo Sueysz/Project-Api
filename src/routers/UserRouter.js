@@ -68,11 +68,9 @@ router.get("/", authentificationMiddleWare, verifyAuthorization(["Admin", "Emplo
 router.get("/:id", authentificationMiddleWare, async (req, res) => {
   const id = req.params.id
   // @ts-ignore
-  if(req.params.id !== req.user.id ) {
-    errorHandling(res,{errorMessage:"Forbidden", errorCode:403})
+  if (req.params.id !== req.user._id && req.user.role === "User") {
+    return errorHandling(res, { errorMessage: "Forbidden", errorCode: 403 })
   }
-
-  if(req.user.role)
 
   const users = await UserRepository.getById(id);
   res.json(users);
