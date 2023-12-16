@@ -8,7 +8,7 @@ import "dotenv/config";
 import { UserCreateSchema } from "../schema/zodSchema.js";
 import { errorHandling } from "../errorHandling.js";
 import { verifyAuthorization } from "../adminMiddleware/authorizationMiddleware.js";
-import { AuthentificationMiddleWare } from "../adminMiddleware/authentificationMiddleware.js";
+import { authentificationMiddleWare } from "../adminMiddleware/authentificationMiddleware.js";
 
 const router = express.Router();
 

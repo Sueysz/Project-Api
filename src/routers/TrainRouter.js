@@ -3,12 +3,12 @@ import TrainRepository from "../repositories/TrainRepository.js";
 import { processRequestBody } from "zod-express-middleware";
 import { TrainPayload } from "../schema/zodSchema.js";
 import { TrainModel } from "../models/TrainModel.js";
-import { AuthentificationMiddleWare } from "../adminMiddleware/authentificationMiddleware.js";
+import { authentificationMiddleWare } from "../adminMiddleware/authentificationMiddleware.js";
 import { verifyAuthorization } from "../adminMiddleware/authorizationMiddleware.js";
 
 const router = express.Router();
 
-router.post("/",AuthentificationMiddleWare,verifyAuthorization("Admin"), processRequestBody(TrainPayload), async (req, res) => {
+router.post("/",authentificationMiddleWare,verifyAuthorization("Admin"), processRequestBody(TrainPayload), async (req, res) => {
     const train = await TrainRepository.createTrain(req.body);
     res.status(201).json(train);
 });
