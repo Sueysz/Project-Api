@@ -1,12 +1,12 @@
-import mongoose from "mongoose"
+import mongoose from "mongoose";
 
 const BookingSchema = new mongoose.Schema({
-    // departure_trainStation_id: relation (train station)
-    // arrival_trainStation_id: relation (train station))
-    // train_id: relation (train)
-    // departure_hour: datetime
-    // arrival_hour: datetime
-    //user_id: relation (user)
+    departure_trainStation_id: { type: mongoose.Schema.Types.ObjectId, ref: "TrainStation" },
+    arrival_trainStation_id: { type: mongoose.Schema.Types.ObjectId, ref: "TrainStation" },
+    train_id: { type: mongoose.Schema.Types.ObjectId, ref: "Train" },
+    departure_hour: { type: Date },
+    arrival_hour: { type: Date },
+    user_id: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
 });
 
-export const BookingModel = mongoose.model("Booking",BookingSchema);
+export const BookingModel = mongoose.model("Booking", BookingSchema);
