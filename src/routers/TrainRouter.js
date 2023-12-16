@@ -7,12 +7,21 @@ import { authentificationMiddleWare } from "../adminMiddleware/authentificationM
 import { verifyAuthorization } from "../adminMiddleware/authorizationMiddleware.js";
 import { getSortOptions } from "../utils/sort.js";
 import { autoCatch } from '../utils/handler.js'
+import { errorHandling } from "../utils/errorHandling.js";
 
 const router = express.Router();
 
 router.post("/", authentificationMiddleWare, verifyAuthorization("Admin"), processRequestBody(TrainPayload), autoCatch(async (req, res) => {
-    const train = await TrainRepository.createTrain(req.body);
-    res.status(201).json(train);
+    try {
+        const train = await TrainRepository.createTrain(req.body);
+        res.status(201).json(train);
+    } catch (error) {
+        if (error.message.startsWith("Invalid station: ")) {
+            return errorHandling(res, { errorMessage: error.message.slice(17), errorCode: 400 })
+        }
+        throw error
+    }
+   
 }));
 
 router.get("/", autoCatch(async (req, res) => {

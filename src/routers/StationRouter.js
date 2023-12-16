@@ -7,14 +7,21 @@ import { autoCatch } from "../utils/handler.js";
 
 const router = express.Router();
 
-router.post("/",authentificationMiddleWare, verifyAuthorization("Admin"), autoCatch(async (req, res) => {
-    await TrainsStationRepository.createStation(req.body);
-    res.status(201)
-        .send()
+router.post("/", authentificationMiddleWare, verifyAuthorization("Admin"), autoCatch(async (req, res) => {
+    try {
+        await TrainsStationRepository.createStation(req.body);
+        res.status(201)
+            .send()
+    } catch (error) {
+        if (error.message === ("Station already created")) {
+            errorHandling(res, { error, errorCode: 409 })
+        }
+        throw error
+    }
 }));
 
 router.get("/", autoCatch(async (req, res) => {
-        const station = await TrainsStationRepository.listStation();
+    const station = await TrainsStationRepository.listStation();
     res.json(station);
 }));
 
@@ -24,21 +31,21 @@ router.get("/:id", autoCatch(async (req, res) => {
     res.json(station);
 }));
 
-router.put("/:id",authentificationMiddleWare, verifyAuthorization("Admin"), autoCatch(async (req, res) => {
+router.put("/:id", authentificationMiddleWare, verifyAuthorization("Admin"), autoCatch(async (req, res) => {
     const { id } = req.params;
     await TrainsStationRepository.updateStation(id, req.body);
     res.send();
 
 }));
 
-router.delete("/:id",authentificationMiddleWare, verifyAuthorization("Admin"), autoCatch(async (req, res) => {
+router.delete("/:id", authentificationMiddleWare, verifyAuthorization("Admin"), autoCatch(async (req, res) => {
     try {
         await TrainsStationRepository.deleteStation(req.params.id)
         res.status(204)
             .end()
     } catch (error) {
         if (error.message === "station not found") {
-            return errorHandling(res,{ error, errorCode:404});
+            return errorHandling(res, { error, errorCode: 404 });
         }
         throw error
     }
@@ -46,7 +53,7 @@ router.delete("/:id",authentificationMiddleWare, verifyAuthorization("Admin"), a
 
 
 
-router.get("/:id/image", autoCatch( async (req, res) => {
+router.get("/:id/image", autoCatch(async (req, res) => {
     const train = await TrainsStationRepository.getStation(req.params.id)
     if (train === null) {
         return res.status(404)
