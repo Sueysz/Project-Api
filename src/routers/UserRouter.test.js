@@ -4,7 +4,7 @@ import supertest from "supertest";
 
 import app from "../app.js";
 import { UserModel } from "../models/UserModel";
-import { createTokenAdmin } from "../createTokenAdmin.js";
+import { createTokenAdmin } from "../utils/createTokenAdmin.js";
 
 describe("GET /users", () => {
     const request = supertest(app);

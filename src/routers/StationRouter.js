@@ -54,7 +54,7 @@ router.delete("/:id", authentificationMiddleWare, verifyAuthorization("Admin"), 
 
 
 router.get("/:id/image", autoCatch(async (req, res) => {
-    const train = await TrainsStationRepository.getStation(req.params.id)
+    const train = await TrainsStationRepository.getStationImage(req.params.id)
     if (train === null) {
         return res.status(404)
             .send();

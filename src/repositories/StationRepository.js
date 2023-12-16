@@ -1,5 +1,6 @@
 import { stationModel } from "../models/StationModel.js";
 import TrainsRepository from './TrainRepository.js'
+import jimp from "jimp";
 
 class StationRepository {
   async listStation() {
@@ -23,9 +24,10 @@ class StationRepository {
 
   async createStation(payload) {
     try {
+      const image = await jimp.read(Buffer.from(payload.img, "base64"))
       return await stationModel.create({
         ...payload,
-        img: Buffer.from(payload.img, "base64"),
+        img: await image.resize(200,200).getBufferAsync(jimp.MIME_PNG)
       });
     } catch (error) {
       if (error.message.startsWith("E11000 duplicate key error collection:")) {
@@ -45,6 +47,10 @@ class StationRepository {
 
   async getStationByName(name) {
     return stationModel.findOne({ name }, { img: false });
+  }
+
+  async getStationImage(id) {
+    return stationModel.findOne({ _id: id }, { img: true });
   }
 }
 
