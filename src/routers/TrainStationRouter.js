@@ -1,8 +1,9 @@
 import express from "express";
 import TrainsStationRepository from "../repositories/TrainsStationRepository.js";
-import { errorHandling } from "../errorHandling.js";
+import { errorHandling } from "../utils/errorHandling.js";
 import { authentificationMiddleWare } from "../adminMiddleware/authentificationMiddleware.js";
 import { verifyAuthorization } from "../adminMiddleware/authorizationMiddleware.js";
+import { getSortOptions } from "../utils/sort.js";
 
 const router = express.Router();
 
@@ -13,7 +14,7 @@ router.post("/",authentificationMiddleWare, verifyAuthorization("Admin"), async 
 });
 
 router.get("/", async (req, res) => {
-    const station = await TrainsStationRepository.listTrainStation();
+        const station = await TrainsStationRepository.listTrainStation();
     res.json(station);
 });
 

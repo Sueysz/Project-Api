@@ -6,7 +6,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import "dotenv/config";
 import { UserCreateSchema } from "../schema/zodSchema.js";
-import { errorHandling } from "../errorHandling.js";
+import { errorHandling } from "../utils/errorHandling.js";
 import { verifyAuthorization } from "../adminMiddleware/authorizationMiddleware.js";
 import { authentificationMiddleWare } from "../adminMiddleware/authentificationMiddleware.js";
 
@@ -65,8 +65,15 @@ router.get("/", authentificationMiddleWare, verifyAuthorization(["Admin", "Emplo
 });
 
 // Only admin / employee can get all users
-router.get("/:id", authentificationMiddleWare, verifyAuthorization(["Admin", "Employee"]), async (req, res) => {
+router.get("/:id", authentificationMiddleWare, async (req, res) => {
   const id = req.params.id
+  // @ts-ignore
+  if(req.params.id !== req.user.id ) {
+    errorHandling(res,{errorMessage:"Forbidden", errorCode:403})
+  }
+
+  if(req.user.role)
+
   const users = await UserRepository.getById(id);
   res.json(users);
 });
@@ -96,7 +103,7 @@ router.put("/:id", authentificationMiddleWare, verifyAuthorization(["Admin", "Em
 
 // Only your self can delete your self
 // @ts-ignore
-router.delete("/delete/:id",authentificationMiddleware, async (req, res) => {
+router.delete("/delete/:id",authentificationMiddleWare, async (req, res) => {
   const { id } = req.params;
   
     // @ts-ignore

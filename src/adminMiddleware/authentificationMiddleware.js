@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 import UserRepository from "../repositories/UserRepository.js";
-import { errorHandling } from "../errorHandling.js";
+import { errorHandling } from "../utils/errorHandling.js";
 import "dotenv/config" 
 
 export const authentificationMiddleWare = (req, res, next) => {

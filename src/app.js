@@ -8,7 +8,7 @@ import BookingRouter from "./routers/BookingRouter.js";
 import TrainRouter from "./routers/TrainRouter.js"
 import TrainStationRouter from "./routers/TrainStationRouter.js"
 import UserRouter from "./routers/UserRouter.js"
-import { errorHandling } from "./errorHandling.js";
+import { errorHandling } from "./utils/errorHandling.js";
 
 const app = express();
 dotenv.config();
