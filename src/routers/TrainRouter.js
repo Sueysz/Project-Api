@@ -6,15 +6,16 @@ import { TrainModel } from "../models/TrainModel.js";
 import { authentificationMiddleWare } from "../adminMiddleware/authentificationMiddleware.js";
 import { verifyAuthorization } from "../adminMiddleware/authorizationMiddleware.js";
 import { getSortOptions } from "../utils/sort.js";
+import { autoCatch } from '../utils/handler.js'
 
 const router = express.Router();
 
-router.post("/", authentificationMiddleWare, verifyAuthorization("Admin"), processRequestBody(TrainPayload), async (req, res) => {
+router.post("/", authentificationMiddleWare, verifyAuthorization("Admin"), processRequestBody(TrainPayload), autoCatch(async (req, res) => {
     const train = await TrainRepository.createTrain(req.body);
     res.status(201).json(train);
-});
+}));
 
-router.get("/", async (req, res) => {
+router.get("/", autoCatch(async (req, res) => {
     const { limit = 10, sortBy, sortOrder } = req.query;
     const sortOptions = getSortOptions(sortBy, sortOrder)
 
@@ -23,17 +24,17 @@ router.get("/", async (req, res) => {
         .sort(sortOptions)
         .exec();
     res.status(200).json(trains);
-});
+}));
 
-router.put("/:id", authentificationMiddleWare, verifyAuthorization("Admin"), processRequestBody(TrainPayload), async (req, res) => {
+router.put("/:id", authentificationMiddleWare, verifyAuthorization("Admin"), processRequestBody(TrainPayload), autoCatch(async (req, res) => {
     const { id } = req.params;
     const train = await TrainRepository.updateTrain(id, req.body);
     res.status(200).json(train);
-});
+}));
 
-router.delete("/:id", authentificationMiddleWare, verifyAuthorization("Admin"), async (req, res) => {
+router.delete("/:id", authentificationMiddleWare, verifyAuthorization("Admin"), autoCatch(async (req, res) => {
     await TrainRepository.deleteTrain(req.params.id);
     res.status(204).end();
-});
+}));
 
 export default router;
