@@ -1,10 +1,12 @@
 import express from "express";
 import TrainsStationRepository from "../repositories/TrainsStationRepository.js";
 import { errorHandling } from "../errorHandling.js";
+import { authentificationMiddleWare } from "../adminMiddleware/authentificationMiddleware.js";
+import { verifyAuthorization } from "../adminMiddleware/authorizationMiddleware.js";
 
 const router = express.Router();
 
-router.post("/", async (req, res) => {
+router.post("/",authentificationMiddleWare, verifyAuthorization("Admin"), async (req, res) => {
     await TrainsStationRepository.createTrainStation(req.body);
     res.status(201)
         .send()

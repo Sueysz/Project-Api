@@ -35,13 +35,13 @@ router.get("/", async (req, res) => {
     res.status(200).json(trains);
 });
 
-router.put("/:id", processRequestBody(TrainPayload), async (req, res) => {
+router.put("/:id",authentificationMiddleWare, verifyAuthorization("Admin"), processRequestBody(TrainPayload), async (req, res) => {
     const { id } = req.params;
     const train = await TrainRepository.updateTrain(id, req.body);
     res.status(200).json(train);
 });
 
-router.delete("/:id", async (req, res) => {
+router.delete("/:id",authentificationMiddleWare, verifyAuthorization("Admin"), async (req, res) => {
     await TrainRepository.deleteTrain(req.params.id);
     res.status(204).end();
 });
