@@ -8,32 +8,32 @@ import { getSortOptions } from "../utils/sort.js";
 const router = express.Router();
 
 router.post("/",authentificationMiddleWare, verifyAuthorization("Admin"), async (req, res) => {
-    await TrainsStationRepository.createTrainStation(req.body);
+    await TrainsStationRepository.createStation(req.body);
     res.status(201)
         .send()
 });
 
 router.get("/", async (req, res) => {
-        const station = await TrainsStationRepository.listTrainStation();
+        const station = await TrainsStationRepository.listStation();
     res.json(station);
 });
 
 router.get("/:id", async (req, res) => {
     const { id } = req.params;
-    const station = await TrainsStationRepository.getTrainStation(id);
+    const station = await TrainsStationRepository.getStation(id);
     res.json(station);
 });
 
 router.put("/:id",authentificationMiddleWare, verifyAuthorization("Admin"), async (req, res) => {
     const { id } = req.params;
-    await TrainsStationRepository.updateTrainStation(id, req.body);
+    await TrainsStationRepository.updateStation(id, req.body);
     res.send();
 
 });
 
 router.delete("/:id",authentificationMiddleWare, verifyAuthorization("Admin"), async (req, res) => {
     try {
-        await TrainsStationRepository.deleteTrainStation(req.params.id)
+        await TrainsStationRepository.deleteStation(req.params.id)
         res.status(204)
             .end()
     } catch (error) {
@@ -47,7 +47,7 @@ router.delete("/:id",authentificationMiddleWare, verifyAuthorization("Admin"), a
 
 
 router.get("/:id/image", async (req, res) => {
-    const train = await TrainsStationRepository.getTrainStation(req.params.id)
+    const train = await TrainsStationRepository.getStation(req.params.id)
     if (train === null) {
         return res.status(404)
             .send();

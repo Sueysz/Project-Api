@@ -2,7 +2,7 @@ import { TrainModel } from "../models/TrainModel.js";
 
 class TrainsRepository {
     async listTrain(limit = 10) {
-        const trains = await TrainModel.find(
+        return TrainModel.find(
             {},
             {
                 name: true,
@@ -15,9 +15,9 @@ class TrainsRepository {
     }
 
     async createTrain(payload) {
-        const train = await TrainModel.create(payload);
 
-        return train;
+        return TrainModel.create(payload);
+
     }
 
     async deleteTrain(id) {
@@ -25,14 +25,13 @@ class TrainsRepository {
     }
 
     async updateTrain(id, payload) {
-        const upTrain = await TrainModel.findOneAndUpdate(
+        return TrainModel.findOneAndUpdate(
             {
                 _id: id,
             },
             payload,
             { new: true }
         );
-        return upTrain;
     }
 }
 

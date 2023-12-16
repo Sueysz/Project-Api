@@ -1,56 +1,33 @@
 import { stationModel } from "../models/StationModel.js";
 
-class TrainStationRepository {
-  async listTrainStation() {
-    const stations = await stationModel.find(
-      {},
-      {
-        img: false,
-      }
-    );
-    return stations;
+class StationRepository {
+  async listStation() {
+    return stationModel.find({},{img: false});
   }
-
-  async deleteTrainStation(id) {
     const { deletedCount } = await stationModel.deleteOne({ _id: id })
     if (deletedCount !== 1) {
       throw new Error("station not found");
     }
   }
 
-  async createTrainStation(payload) {
-
-    const stations = await stationModel.create({
+  async createStation(payload) {
+    return stationModel.create({
       ...payload,
       img: Buffer.from(payload.img, "base64"),
-
     });
-
-    return stations;
   }
 
-  async updateTrainStation(id, payload) {
-    const upStations = await stationModel.findOneAndUpdate(
-      {
-        _id: id,
-      },
-      payload,
-      { new: true }
-    );
-    return upStations;
+  async updateStation(id, payload) {
+    return stationModel.findOneAndUpdate({ _id: id }, payload, { new: true });
   }
 
-  async getTrainStation(id) {
-    const getTrain = await stationModel.findOne(
-      {
-        _id: id,
-      },
-      {
-        img: false,
+  async getStation(id) {
+    return stationModel.findOne({ _id: id }, { img: false });
       }
-    );
-    return getTrain;
+
+  async getStationByName(name) {
+    return stationModel.findOne({ name }, { img: false });
   }
 }
 
-export default new TrainStationRepository();
+export default new StationRepository();
