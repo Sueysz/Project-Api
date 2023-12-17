@@ -8,14 +8,12 @@ import TrainRouter from "./routers/TrainRouter.js"
 import TrainStationRouter from "./routers/StationRouter.js"
 import UserRouter from "./routers/UserRouter.js"
 import { errorHandling } from "./utils/errorHandling.js";
-import { autoCatch } from "./utils/handler.js";
 
 const app = express();
 dotenv.config();
 app.use(express.json());
 app.use(cors())
 
-app.use(autoCatch)
 app.use("/booking", BookingRouter);
 app.use("/trains", TrainRouter);
 app.use("/trains-stations", TrainStationRouter);
