@@ -1,13 +1,13 @@
 import express, { json } from "express";
 import TrainsStationRepository from "../repositories/StationRepository.js";
 import { errorHandling } from "../utils/errorHandling.js";
-import { authentificationMiddleWare } from "../adminMiddleware/authentificationMiddleware.js";
+import { authentificationMiddleware } from "../adminMiddleware/authentificationMiddleware.js";
 import { verifyAuthorization } from "../adminMiddleware/authorizationMiddleware.js";
 import { autoCatch } from "../utils/handler.js";
 
 const router = express.Router();
 
-router.post("/", authentificationMiddleWare, verifyAuthorization("Admin"), autoCatch(async (req, res) => {
+router.post("/", authentificationMiddleware, verifyAuthorization("Admin"), autoCatch(async (req, res) => {
     try {
         const station = await TrainsStationRepository.createStation(req.body);
         res.status(201).json({id : station._id})
@@ -30,14 +30,14 @@ router.get("/:id", autoCatch(async (req, res) => {
     res.json(station);
 }));
 
-router.put("/:id", authentificationMiddleWare, verifyAuthorization("Admin"), autoCatch(async (req, res) => {
+router.put("/:id", authentificationMiddleware, verifyAuthorization("Admin"), autoCatch(async (req, res) => {
     const { id } = req.params;
     await TrainsStationRepository.updateStation(id, req.body);
     res.send();
 
 }));
 
-router.delete("/:id", authentificationMiddleWare, verifyAuthorization("Admin"), autoCatch(async (req, res) => {
+router.delete("/:id", authentificationMiddleware, verifyAuthorization("Admin"), autoCatch(async (req, res) => {
     try {
         await TrainsStationRepository.deleteStation(req.params.id)
         res.status(204)
