@@ -24,7 +24,7 @@ router.post("/register", processRequestBody(UserCreateSchema), autoCatch(async (
   }
   const encryptedPassword = await bcrypt.hash(password, 10);
   const user = await UserRepository.createUser({
-    email: email.toLowerCase(),
+    email: email,
     username,
     password: encryptedPassword,
     role: "User",
