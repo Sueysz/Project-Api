@@ -3,7 +3,7 @@ import UserRepository from "../repositories/UserRepository.js";
 import { errorHandling } from "../utils/errorHandling.js";
 import "dotenv/config" 
 
-export const authentificationMiddleWare = (req, res, next) => {
+export const authentificationMiddleware = (req, res, next) => {
     const token = req.headers["authorization"];
 
     if (!token|| !token.startsWith("Bearer ")) {

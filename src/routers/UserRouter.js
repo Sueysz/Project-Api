@@ -8,7 +8,7 @@ import "dotenv/config";
 import { UserCreateSchema } from "../schema/zodSchema.js";
 import { errorHandling } from "../utils/errorHandling.js";
 import { verifyAuthorization } from "../adminMiddleware/authorizationMiddleware.js";
-import { authentificationMiddleWare } from "../adminMiddleware/authentificationMiddleware.js";
+import { authentificationMiddleware } from "../adminMiddleware/authentificationMiddleware.js";
 import { autoCatch } from "../utils/handler.js";
 
 const router = express.Router();
@@ -18,12 +18,12 @@ router.post("/register", processRequestBody(UserCreateSchema), autoCatch(async (
   if (!email || !username || !password) {
     return errorHandling(res, { errorCode: 400 })
   }
-  const oldUser = await UserModel.findOne({ email });
+  const oldUser = await UserRepository.getByEmail(email)
   if (oldUser) {
     return errorHandling(res, { errorCode: 409 });
   }
   const encryptedPassword = await bcrypt.hash(password, 10);
-  const user = await UserModel.create({
+  const user = await UserRepository.createUser({
     email: email.toLowerCase(),
     username,
     password: encryptedPassword,
@@ -60,13 +60,13 @@ router.post("/login", autoCatch(async (req, res) => {
 
 // Only admin / employee can get all users
 // @ts-ignore
-router.get("/", authentificationMiddleWare, verifyAuthorization(["Admin", "Employee"]), autoCatch(async (req, res) => {
+router.get("/", authentificationMiddleware, verifyAuthorization(["Admin", "Employee"]), autoCatch(async (req, res) => {
   const user = await UserRepository.listUser();
   res.status(200).json(user);
 }));
 
 // Only admin / employee can get all users
-router.get("/:id", authentificationMiddleWare, autoCatch(async (req, res) => {
+router.get("/:id", authentificationMiddleware, autoCatch(async (req, res) => {
   const id = req.params.id
 
   // @ts-ignore
@@ -79,7 +79,7 @@ router.get("/:id", authentificationMiddleWare, autoCatch(async (req, res) => {
 }));
 
 // Only admin / your self can update user
-router.put("/:id", authentificationMiddleWare, verifyAuthorization(["Admin", "Employee", "User"]), autoCatch(async (req, res) => {
+router.put("/:id", authentificationMiddleware, verifyAuthorization(["Admin", "Employee", "User"]), autoCatch(async (req, res) => {
   const { id } = req.params;
   const { role } = req.body;
 
@@ -103,7 +103,7 @@ router.put("/:id", authentificationMiddleWare, verifyAuthorization(["Admin", "Em
 
 // Only your self can delete your self
 // @ts-ignore
-router.delete("/delete/:id", authentificationMiddleWare, autoCatch(async (req, res) => {
+router.delete("/delete/:id", authentificationMiddleware, autoCatch(async (req, res) => {
   const { id } = req.params;
 
   // @ts-ignore
