@@ -24,7 +24,9 @@ export const TrainStationPayload = z.object({
 }).strict();
 
 export const UserCreateSchema = z.object({
-    email: z.string().email(),
+    email: z.string().refine((value) => /^[a-zA-Z]+$/.test(value), {
+        message:"Invalid email format.",
+    }),
     username: z.string(),
-    password: z.string().min(4),
+    password: z.string().min(12),
   }).strict();
