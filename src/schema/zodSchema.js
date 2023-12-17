@@ -1,5 +1,14 @@
 import { z } from "zod";
 
+export const BookingSchema = z.object({
+    train_id: z.string()
+}).strict()
+
+export const BookingValidationSchema = z.object({
+    train_id: z.string(),
+    user_id: z.string(),
+}).strict()
+
 export const TrainPayload = z.object({
     name: z.string().min(1).max(30),
     start_station: z.string().min(1).max(50),
