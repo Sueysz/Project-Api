@@ -1,0 +1,630 @@
+openapi: 3.0.0
+info:
+  title: PROJECT-API
+  version: 1.0.0
+
+paths:
+  /users/register:
+    post:
+      summary: Register a new user
+      description: Register a new user
+      tags:
+        - Users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserCreateSchema'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserSchema'
+
+  /users/login:
+    post:
+      summary: User login
+      description: User login
+      tags:
+        - Users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserLoginSchema'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchema'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchema'
+
+  /users:
+    get:
+      summary: Get all users
+      description: Get all users
+      tags:
+        - Users
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserSchema'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchema'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchema'
+
+  /users/{id}:
+    get:
+      summary: Get a user by ID
+      description: Get a user by ID
+      tags:
+        - Users
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserSchema'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchema'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchema'
+
+    put:
+      summary: Update a user by ID
+      description: Update a user by ID
+      tags:
+        - Users
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserUpdateSchema'
+      responses:
+        '200':
+          description: OK
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchema'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchema'
+
+  /users/delete/{id}:
+    delete:
+      summary: Delete a user by ID
+      description: Delete a user by ID
+      tags:
+        - Users
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchema'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchema'
+  
+  /bookings:
+    post:
+      summary: Create Booking
+      description: Create a new booking
+      tags:
+        - Bookings
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                train_id:
+                  type: string
+              required:
+                - train_id
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookingSchema'  # Use the correct schema here
+
+  /bookings/validate/{id}:
+    post:
+      summary: Validate Booking
+      description: Validate a booking by ID
+      tags:
+        - Bookings
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                train_id:
+                  type: string
+                user_id:
+                  type: string
+              required:
+                - train_id
+                - user_id
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookingValidationSchema'  # Use the correct schema here
+                
+  /trains:
+    post:
+      summary: Create Train
+      description: Create a new train
+      tags:
+        - Trains
+      security:
+        - bearerAuth: []
+      requestBody:
+        description: Train payload
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TrainPayload'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Train'
+
+    get:
+      summary: Get Trains
+      description: Get a list of trains
+      tags:
+        - Trains
+      parameters:
+        - name: limit
+          in: query
+          description: Number of trains to return
+          schema:
+            type: integer
+        - name: sortBy
+          in: query
+          description: Field to sort trains by
+          schema:
+            type: string
+        - name: sortOrder
+          in: query
+          description: Sort order (asc/desc)
+          schema:
+            type: string
+            enum: [asc, desc]
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Train'
+
+  /trains/{id}:
+    put:
+      summary: Update Train
+      description: Update a train by ID
+      tags:
+        - Trains
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          description: Train ID
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Train payload
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TrainPayload'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Train'
+
+    delete:
+      summary: Delete Train
+      description: Delete a train by ID
+      tags:
+        - Trains
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          description: Train ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: No Content
+          
+  /stations:
+    get:
+      summary: Get Stations
+      description: Get a list of stations
+      tags:
+        - Stations
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Station'
+                  
+    post:
+      summary: Create Station
+      description: Create a new station
+      tags:
+        - Stations
+      security:
+        - bearerAuth: []
+      requestBody:
+        description: Station payload
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StationPayload'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Station'
+
+  /stations/{id}:
+    get:
+      summary: Get Station by ID
+      description: Get a station by ID
+      tags:
+        - Stations
+      parameters:
+        - name: id
+          in: path
+          description: Station ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Station'
+
+    put:
+      summary: Update Station
+      description: Update a station by ID
+      tags:
+        - Stations
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          description: Station ID
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Station payload
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StationPayload'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Station'
+
+    delete:
+      summary: Delete Station
+      description: Delete a station by ID
+      tags:
+        - Stations
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          description: Station ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: No Content
+
+  /stations/{id}/image:
+    get:
+      summary: Get Station Image
+      description: Get the image of a station by ID
+      tags:
+        - Stations
+      parameters:
+        - name: id
+          in: path
+          description: Station ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            image/png:
+              schema:
+                type: string
+                format: binary
+  
+components:
+  schemas:
+    UserCreateSchema:
+      type: object
+      properties:
+        email:
+          type: string
+        username:
+          type: string
+        password:
+          type: string
+
+    UserLoginSchema:
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+
+    UserSchema:
+      type: object
+      properties:
+        email:
+          type: string
+        username:
+          type: string
+        password:
+          type: string
+        role:
+          type: string
+          enum:
+            - Admin
+            - Employee
+            - User
+        token:
+          type: string
+
+    UserUpdateSchema:
+      type: object
+      properties:
+        role:
+          type: string
+          enum:
+            - Admin
+            - Employee
+            - User
+
+    ErrorSchema:
+      type: object
+      properties:
+        errorMessage:
+          type: string
+        errorCode:
+          type: integer
+    
+    BookingSchema:
+      type: object
+      properties:
+        train_id:
+          type: string
+      required:
+        - train_id
+
+    BookingValidationSchema:
+      type: object
+      properties:
+        train_id:
+          type: string
+        user_id:
+          type: string
+      required:
+        - train_id
+        - user_id
+    
+    Train:
+      type: object
+      properties:
+        name:
+          type: string
+        start_station:
+          type: string
+          description: Reference to the start station
+        end_station:
+          type: string
+          description: Reference to the end station
+        time_of_departure:
+          type: string
+          format: date-time
+      required:
+        - name
+        - start_station
+        - end_station
+        - time_of_departure
+
+    TrainPayload:
+      type: object
+      properties:
+        name:
+          type: string
+        start_station:
+          type: string
+        end_station:
+          type: string
+        time_of_departure:
+          type: string
+          format: date-time
+      required:
+        - name
+        - start_station
+        - end_station
+        - time_of_departure
+
+    Station:
+      type: object
+      properties:
+        name:
+          type: string
+        open_at:
+          type: string
+        close_at:
+          type: string
+        img:
+          type: string
+      required:
+        - name
+        - open_at
+        - close_at
+        - img
+        
+    StationPayload:
+      type: object
+      properties:
+        name:
+          type: string
+        open_at:
+          type: string
+        close_at:
+          type: string
+        img:
+          type: string
+      required:
+        - name
+        - open_at
+        - close_at
+        - img
+  
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+security:
+  - bearerAuth: []
