@@ -2,6 +2,18 @@ import { TrainModel } from "../models/TrainModel.js";
 import StationRepository from "./StationRepository.js";
 
 class TrainsRepository {
+    async getTrainById(id) {
+        try {
+            return await TrainModel.findOne({ _id: id })
+        } catch (error) {
+            if (error.message.startsWith('Cast to ObjectId failed for value "')) {
+                return null
+            }
+            throw error
+        }
+
+    }
+
     async listTrain(limit = 10) {
         return TrainModel.find(
             {},
@@ -27,16 +39,16 @@ class TrainsRepository {
     async createTrain(payload) {
         const startStation = await StationRepository.getStationByName(payload.start_station)
         const endStation = await StationRepository.getStationByName(payload.end_station)
-        if(!startStation && !endStation){
+        if (!startStation && !endStation) {
             throw new Error("Invalid station: Invalid startStation and endStation")
         }
-        if(!startStation){
+        if (!startStation) {
             throw new Error("Invalid station: Invalid startStation")
         }
-        if(!endStation){
+        if (!endStation) {
             throw new Error("Invalid station: Invalid endStation")
         }
-        
+
         return TrainModel.create(payload);
 
     }
@@ -46,13 +58,21 @@ class TrainsRepository {
     }
 
     async updateTrain(id, payload) {
-        return TrainModel.findOneAndUpdate(
-            {
-                _id: id,
-            },
-            payload,
-            { new: true }
-        );
+        try {
+            return await TrainModel.findOneAndUpdate(
+                {
+                    _id: id,
+                },
+                payload,
+                { new: true }
+            );
+        } catch (error) {
+            if (error.message.startsWith('Cast to ObjectId failed for value "')) {
+                return null
+            }
+            throw error
+        }
+
     }
 }
 
