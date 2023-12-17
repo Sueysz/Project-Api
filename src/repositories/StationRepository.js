@@ -27,7 +27,7 @@ class StationRepository {
       const image = await jimp.read(Buffer.from(payload.img, "base64"))
       return await stationModel.create({
         ...payload,
-        img: await image.resize(200,200).getBufferAsync(jimp.MIME_PNG)
+        img: await image.resize(200, 200).getBufferAsync(jimp.MIME_PNG)
       });
     } catch (error) {
       if (error.message.startsWith("E11000 duplicate key error collection:")) {
@@ -38,19 +38,50 @@ class StationRepository {
   }
 
   async updateStation(id, payload) {
-    return stationModel.findOneAndUpdate({ _id: id }, payload, { new: true });
+    try {
+      return stationModel.findOneAndUpdate({ _id: id }, payload, { new: true });
+    } catch (error) {
+      if (error.message.startsWith('Cast to ObjectId failed for value "')) {
+        return null
+      }
+      throw error
+    }
+
   }
 
   async getStation(id) {
-    return stationModel.findOne({ _id: id }, { img: false });
+    try {
+      return await stationModel.findOne({ _id: id }, { img: false });
+    } catch (error) {
+      if (error.message.startsWith('Cast to ObjectId failed for value "')) {
+        return null
+      }
+      throw error
+    }
+
   }
 
   async getStationByName(name) {
-    return stationModel.findOne({ name }, { img: false });
+    try {
+      return await stationModel.findOne({ name }, { img: false });
+    } catch (error) {
+      if (error.message.startsWith('Cast to ObjectId failed for value "')) {
+        return null
+      }
+      throw error
+    }
+
   }
 
   async getStationImage(id) {
-    return stationModel.findOne({ _id: id }, { img: true });
+    try {
+      return await stationModel.findOne({ _id: id }, { img: true });
+    } catch (error) {
+      if (error.message.startsWith('Cast to ObjectId failed for value "')) {
+        return null
+      }
+      throw error
+    }
   }
 }
 
