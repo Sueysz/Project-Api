@@ -39,11 +39,8 @@ router.post("/validate/:id", authentificationMiddleware, verifyAuthorization(["E
     if (trainId !== req.body.train_id && userId !== req.body.user_id) {
         return errorHandling(res, { errorMessage: 'Ticket for the wrong train and user', errorCode: 402 })
     }
-    if (trainId !== req.body.train_id) {
+    if (trainId !== req.body.train_id || userId !== req.body.user_id ) {
         return errorHandling(res, { errorMessage: 'Ticket for the wrong train', errorCode: 402 })
-    }
-    if (userId !== req.body.user_id) {
-        return errorHandling(res, { errorMessage: 'Ticket for the wrong user', errorCode: 402 })
     }
 
     res.status(200).json({ ticket })

@@ -1,5 +1,4 @@
 import { UserModel } from "../models/UserModel.js";
-import { errorHandling } from "../utils/errorHandling.js";
 
 class UserRepository {
   async listUser() {
